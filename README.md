@@ -180,7 +180,7 @@ VC access code: `TRIBUTARY2026` (production)
 - [x] Phase 3: Component porting (CapitalStack, TrustGraph, Agents)
 - [x] Phase 3b: GitHub Pages deployment configured
 - [x] Phase 4: Agent economy edge functions (6 functions)
-- [ ] Phase 5: Capital deployment dashboard
+- [x] Phase 5: Capital deployment dashboard
 - [ ] Phase 6: Constitutional governance engine
 - [ ] Phase 7: Privateer Fleet Command
 - [ ] Phase 8: Investor relations automation
@@ -240,4 +240,4 @@ MIT License - see LICENSE file
 
 **Built with ❤️ by XMRT DAO**
 
-*Last updated: 2026-06-25 — Build passing ✅ | Demo Mode 🎮 | Phase 4 Complete 🚀*
+*Last updated: 2026-06-25 — Build passing ✅ | Demo Mode 🎮 | Phase 5 Complete 📊*
