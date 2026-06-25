@@ -5,6 +5,7 @@ import AgentsSection from './components/sections/AgentsSection'
 import Investors from './pages/Investors'
 import CapitalDeployment from './pages/CapitalDeployment'
 import Governance from './pages/Governance'
+import FleetCommand from './pages/FleetCommand'
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
                 </Link>
                 <Link to="/governance" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Governance
+                </Link>
+                <Link to="/fleet" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Fleet
                 </Link>
                 <a href="#trustgraph" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   TrustGraph
@@ -53,6 +57,7 @@ function App() {
             } />
             <Route path="/deployment" element={<CapitalDeployment />} />
             <Route path="/governance" element={<Governance />} />
+            <Route path="/fleet" element={<FleetCommand />} />
             <Route path="/investors" element={<Investors />} />
           </Routes>
         </main>
