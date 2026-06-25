@@ -191,6 +191,8 @@ VC access code: `TRIBUTARY2026` (production)
 
 **🌐 Live Site**: https://xmrtdao.github.io/capitalstack/
 
+*Demo mode: Running on mock data, no backend required.*
+
 ### Supabase Configuration
 
 1. Apply the migration:
@@ -222,4 +224,4 @@ MIT License - see LICENSE file
 
 **Built with ❤️ by XMRT DAO**
 
-*Last updated: 2026-06-25 — Build passing ✅*
+*Last updated: 2026-06-25 — Build passing ✅ | Demo Mode 🎮*

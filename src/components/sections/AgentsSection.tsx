@@ -1,7 +1,4 @@
-'use client'
-
 import { useState, useEffect } from 'react'
-import { supabase } from '@/integrations/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,9 +12,18 @@ interface Agent {
   trust_score: number
   status: 'pending' | 'active' | 'suspended' | 'decommissioned'
   constitution_hash: string | null
-  metadata: Record<string, unknown>
   created_at: string
 }
+
+const MOCK_AGENTS: Agent[] = [
+  { id: '1', did: 'did:xmrt:constitution-001', name: 'Constitution', agent_type: 'constitutional', trust_score: 95, status: 'active', constitution_hash: '0x1a2b3c...', created_at: '2026-01-15T00:00:00Z' },
+  { id: '2', did: 'did:xmrt:bylaws-002', name: 'Bylaws', agent_type: 'constitutional', trust_score: 92, status: 'active', constitution_hash: '0x4d5e6f...', created_at: '2026-01-15T00:00:00Z' },
+  { id: '3', did: 'did:xmrt:audit-003', name: 'Auditor', agent_type: 'constitutional', trust_score: 88, status: 'active', constitution_hash: '0x7g8h9i...', created_at: '2026-02-01T00:00:00Z' },
+  { id: '4', did: 'did:xmrt:dev-004', name: 'CodeReview', agent_type: 'developer', trust_score: 78, status: 'active', constitution_hash: null, created_at: '2026-03-10T00:00:00Z' },
+  { id: '5', did: 'did:xmrt:dev-005', name: 'DeployBot', agent_type: 'developer', trust_score: 82, status: 'active', constitution_hash: null, created_at: '2026-03-15T00:00:00Z' },
+  { id: '6', did: 'did:xmrt:fin-006', name: 'Treasury', agent_type: 'financial', trust_score: 91, status: 'active', constitution_hash: '0xj1k2l3...', created_at: '2026-04-01T00:00:00Z' },
+  { id: '7', did: 'did:xmrt:fin-007', name: 'Distributions', agent_type: 'financial', trust_score: 87, status: 'active', constitution_hash: null, created_at: '2026-04-15T00:00:00Z' },
+]
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
   constitutional: <Shield className="w-4 h-4" />,
@@ -44,25 +50,13 @@ export default function AgentsSection() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    loadAgents()
-  }, [])
-
-  const loadAgents = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('agents')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50)
-
-      if (error) throw error
-      if (data) setAgents(data as Agent[])
-    } catch (error) {
-      console.error('Error loading agents:', error)
-    } finally {
+    // Simulate loading
+    const timer = setTimeout(() => {
+      setAgents(MOCK_AGENTS)
       setIsLoading(false)
-    }
-  }
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [])
 
   const govAgents = agents.filter(a => a.agent_type === 'constitutional')
   const devAgents = agents.filter(a => a.agent_type === 'developer')

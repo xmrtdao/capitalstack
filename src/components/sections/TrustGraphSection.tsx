@@ -1,7 +1,4 @@
-'use client'
-
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { supabase } from '@/integrations/supabase/client'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { TrendingUp, TrendingDown, Shield, Activity } from 'lucide-react'
@@ -13,7 +10,6 @@ interface Agent {
   agent_type: 'constitutional' | 'developer' | 'financial'
   trust_score: number
   status: 'pending' | 'active' | 'suspended' | 'decommissioned'
-  metadata: Record<string, unknown>
 }
 
 interface TrustEvent {
@@ -25,29 +21,15 @@ interface TrustEvent {
   created_at: string
 }
 
-interface TGNode {
-  id: string
-  label: string
-  score: number
-  targetScore: number
-  type: 'constitutional' | 'developer' | 'financial'
-  color: string
-  x: number
-  y: number
-  vx: number
-  vy: number
-  r: number
-  pulsePhase: number
-  lastEvent: string
-  eventAlpha: number
-}
-
-interface TGEdge {
-  a: TGNode
-  b: TGNode
-  strength: number
-  flowPhase: number
-}
+const MOCK_AGENTS: Agent[] = [
+  { id: '1', did: 'did:xmrt:constitution-001', name: 'Constitution', agent_type: 'constitutional', trust_score: 95, status: 'active' },
+  { id: '2', did: 'did:xmrt:bylaws-002', name: 'Bylaws', agent_type: 'constitutional', trust_score: 92, status: 'active' },
+  { id: '3', did: 'did:xmrt:audit-003', name: 'Auditor', agent_type: 'constitutional', trust_score: 88, status: 'active' },
+  { id: '4', did: 'did:xmrt:dev-004', name: 'CodeReview', agent_type: 'developer', trust_score: 78, status: 'active' },
+  { id: '5', did: 'did:xmrt:dev-005', name: 'DeployBot', agent_type: 'developer', trust_score: 82, status: 'active' },
+  { id: '6', did: 'did:xmrt:fin-006', name: 'Treasury', agent_type: 'financial', trust_score: 91, status: 'active' },
+  { id: '7', did: 'did:xmrt:fin-007', name: 'Distributions', agent_type: 'financial', trust_score: 87, status: 'active' },
+]
 
 const NODE_COLOR: Record<string, string> = {
   constitutional: '#00ffcc',
@@ -83,8 +65,7 @@ function initTrustGraph(
   let W = 0, H = 0
   let tick = 0
   let rafId = 0
-  let nodes: TGNode[] = []
-  let edges: TGEdge[] = []
+  let nodes: any[] = []
   let selectedId: string | null = null
   const dpr = Math.min(window.devicePixelRatio || 1, 2)
 
@@ -105,7 +86,6 @@ function initTrustGraph(
         id: a.did,
         label: a.name || a.did.slice(0, 12),
         score: a.trust_score ?? 65,
-        targetScore: a.trust_score ?? 65,
         type: a.agent_type,
         color: NODE_COLOR[a.agent_type] || '#ffbb33',
         x: cx + Math.cos(angle) * r + (Math.random() - 0.5) * 40,
@@ -117,62 +97,15 @@ function initTrustGraph(
         eventAlpha: 0,
       }
     })
-
-    // Add some unknown agents
-    for (let i = 0; i < 12; i++) {
-      const angle = Math.random() * Math.PI * 2
-      const r = Math.min(W, H) * (0.12 + Math.random() * 0.38)
-      nodes.push({
-        id: `unknown-${i}`,
-        label: `AGT-${Math.floor(Math.random() * 9000 + 1000)}`,
-        score: 20 + Math.floor(Math.random() * 70),
-        targetScore: 20 + Math.floor(Math.random() * 70),
-        type: 'constitutional',
-        color: '#ffbb33',
-        x: W / 2 + Math.cos(angle) * r,
-        y: H / 2 + Math.sin(angle) * r,
-        vx: 0, vy: 0,
-        r: 6 + Math.random() * 8,
-        pulsePhase: Math.random() * Math.PI * 2,
-        lastEvent: '', eventAlpha: 0,
-      })
-    }
-
-    // Create edges
-    edges = []
-    const named = nodes.slice(0, agents.length)
-    named.forEach((a, i) => {
-      named.forEach((b, j) => {
-        if (j > i && Math.random() > 0.3) {
-          edges.push({ a, b, strength: 0.3 + Math.random() * 0.7, flowPhase: Math.random() * Math.PI * 2 })
-        }
-      })
-      nodes.slice(agents.length).filter(() => Math.random() > 0.65).forEach(u => {
-        edges.push({ a, b: u, strength: 0.15 + Math.random() * 0.3, flowPhase: Math.random() * Math.PI * 2 })
-      })
-    })
   }
 
   function physics() {
     const cx = W / 2, cy = H / 2
     nodes.forEach(n => {
-      n.score += (n.targetScore - n.score) * 0.04
-      n.r = (n.type === 'constitutional' ? 6 : 14) + n.score * (n.type === 'constitutional' ? 0.04 : 0.1)
       n.vx += (Math.random() - 0.5) * 0.15
       n.vy += (Math.random() - 0.5) * 0.15
       n.vx += (cx - n.x) * 0.0008
       n.vy += (cy - n.y) * 0.0008
-      nodes.forEach(m => {
-        if (m === n) return
-        const dx = n.x - m.x, dy = n.y - m.y
-        const dist = Math.sqrt(dx * dx + dy * dy) + 0.01
-        const minDist = n.r + m.r + 20
-        if (dist < minDist) {
-          const force = (minDist - dist) / minDist * 0.6
-          n.vx += (dx / dist) * force
-          n.vy += (dy / dist) * force
-        }
-      })
       n.vx *= 0.88; n.vy *= 0.88
       n.x += n.vx; n.y += n.vy
       const pad = n.r + 20
@@ -182,7 +115,6 @@ function initTrustGraph(
       if (n.y > H - pad) n.vy -= 0.5
       if (n.eventAlpha > 0) n.eventAlpha -= 0.008
     })
-    edges.forEach(e => { e.flowPhase += 0.018 })
   }
 
   function draw() {
@@ -195,35 +127,12 @@ function initTrustGraph(
       for (let gy = 0; gy < H; gy += 40)
         ctx.fillRect(gx, gy, 1, 1)
 
-    // Edges
-    edges.forEach(e => {
-      const dx = e.b.x - e.a.x, dy = e.b.y - e.a.y
-      const dist = Math.sqrt(dx * dx + dy * dy)
-      const alpha = e.strength * 0.18 * Math.min(1, 200 / dist)
-      ctx.strokeStyle = `rgba(255,140,0,${alpha})`
-      ctx.lineWidth = 0.5
-      ctx.beginPath(); ctx.moveTo(e.a.x, e.a.y); ctx.lineTo(e.b.x, e.b.y); ctx.stroke()
-      const t = ((e.flowPhase % (Math.PI * 2)) / (Math.PI * 2))
-      const px = e.a.x + dx * t, py = e.a.y + dy * t
-      ctx.beginPath(); ctx.arc(px, py, 1.5, 0, Math.PI * 2)
-      ctx.fillStyle = scoreColor(e.a.score)
-      ctx.globalAlpha = e.strength * 0.5; ctx.fill(); ctx.globalAlpha = 1
-    })
-
     // Nodes
-    const orderedNodes = [...nodes].sort((a, b) => (a.id === selectedId ? 1 : b.id === selectedId ? -1 : 0))
-
-    orderedNodes.forEach(n => {
+    nodes.forEach(n => {
       const sc = scoreColor(n.score)
       const pulse = Math.sin(tick * 0.04 + n.pulsePhase) * 0.15 + 0.85
-      const named = n.type !== 'constitutional'
+      const named = n.type !== 'unknown'
       const isSelected = n.id === selectedId
-
-      // Draw selected rings behind
-      if (isSelected && named) {
-        ctx.beginPath(); ctx.arc(n.x, n.y, n.r * pulse + 3, 0, Math.PI * 2)
-        ctx.strokeStyle = `${sc}99`; ctx.lineWidth = 1.5; ctx.stroke()
-      }
 
       // Outer glow
       if (named) {
@@ -261,7 +170,7 @@ function initTrustGraph(
 
       // Event label
       if (n.eventAlpha > 0 && n.lastEvent) {
-        const delta = n.targetScore - n.score
+        const delta = n.score - 65
         ctx.font = `8px monospace`
         ctx.textAlign = 'center'
         ctx.fillStyle = delta >= 0 ? `rgba(68,255,170,${n.eventAlpha})` : `rgba(255,51,153,${n.eventAlpha})`
@@ -284,7 +193,7 @@ function initTrustGraph(
     const mx = (evt.clientX - rect.left) * (W / rect.width)
     const my = (evt.clientY - rect.top) * (H / rect.height)
     let bestDist = Infinity
-    const hit = nodes.filter(n => n.type !== 'constitutional').reduce<TGNode | null>((best, n) => {
+    const hit = nodes.reduce<any | null>((best, n) => {
       const d = Math.hypot(mx - n.x, my - n.y)
       if (d <= n.r + 35 && d < bestDist) { bestDist = d; return n }
       return best
@@ -303,7 +212,7 @@ function initTrustGraph(
     const rect = canvas.getBoundingClientRect()
     const mx = (evt.clientX - rect.left) * (W / rect.width)
     const my = (evt.clientY - rect.top) * (H / rect.height)
-    const hit = nodes.filter(n => n.type !== 'constitutional').some(n => Math.hypot(mx - n.x, my - n.y) <= n.r + 35)
+    const hit = nodes.some(n => Math.hypot(mx - n.x, my - n.y) <= n.r + 35)
     canvas.style.cursor = hit ? 'pointer' : 'default'
   })
 
@@ -314,7 +223,6 @@ function initTrustGraph(
   function applyEvent(nodeId: string, delta: number, label: string) {
     const n = nodes.find(n => n.id === nodeId)
     if (!n) return
-    n.targetScore = Math.max(0, Math.min(100, n.targetScore + delta))
     n.lastEvent = `${delta > 0 ? '+' : ''}${delta} ${label}`
     n.eventAlpha = 1
   }
@@ -338,27 +246,13 @@ export default function TrustGraphSection() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    loadAgents()
-  }, [])
-
-  const loadAgents = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('agents')
-        .select('*')
-        .eq('status', 'active')
-        .limit(20)
-
-      if (error) throw error
-      if (data) {
-        setAgents(data as Agent[])
-      }
-    } catch (error) {
-      console.error('Error loading agents:', error)
-    } finally {
+    // Simulate loading
+    const timer = setTimeout(() => {
+      setAgents(MOCK_AGENTS)
       setIsLoading(false)
-    }
-  }
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleNodeClick = useCallback((nodeId: string | null, _xFrac: number, _yFrac: number) => {
     setSelectedAgent(nodeId)

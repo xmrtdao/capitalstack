@@ -1,7 +1,4 @@
-'use client'
-
 import { useState, useEffect } from 'react'
-import { supabase } from '@/integrations/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { PieChart, DollarSign } from 'lucide-react'
@@ -18,10 +15,90 @@ interface CapitalStackLayer {
   coverage: number
   description: string
   details: string
-  display_order: number
   is_open: boolean
-  is_active: boolean
 }
+
+const MOCK_CAPITAL_STACK: CapitalStackLayer[] = [
+  {
+    layer_key: 'cpace',
+    name: 'C-PACE Retrofit',
+    sub_label: 'Senior Debt',
+    amount_m: 25.5,
+    pct_of_total: 75,
+    color: '#00ffcc',
+    seniority: 0.88,
+    yield_score: 0.72,
+    coverage: 0.92,
+    description: 'Commercial Property Assessed Clean Energy',
+    details: 'Non-recourse senior financing for energy-efficient retrofits. 30-year term, fixed rate.',
+    is_open: false,
+  },
+  {
+    layer_key: 'sba_priv',
+    name: 'SBA 504 Private',
+    sub_label: 'First Lien',
+    amount_m: 2.75,
+    pct_of_total: 8,
+    color: '#ffaa00',
+    seniority: 0.70,
+    yield_score: 0.60,
+    coverage: 0.75,
+    description: 'Private lender portion of SBA 504 loan',
+    details: '50% of total SBA 504 financing. 25-year amortization.',
+    is_open: false,
+  },
+  {
+    layer_key: 'sba_cdc',
+    name: 'SBA 504 CDC',
+    sub_label: 'Second Lien (Gov)',
+    amount_m: 2.2,
+    pct_of_total: 6.5,
+    color: '#ff8800',
+    seniority: 0.60,
+    yield_score: 0.68,
+    coverage: 0.65,
+    description: 'CDC/government portion of SBA 504',
+    details: '40% of total SBA 504. Below-market fixed rate.',
+    is_open: false,
+  },
+  {
+    layer_key: 'dao_reit',
+    name: 'DAO-REIT Equity',
+    sub_label: 'Tokenized Equity',
+    amount_m: 0.55,
+    pct_of_total: 1.6,
+    color: '#ff3399',
+    seniority: 0.28,
+    yield_score: 0.95,
+    coverage: 0.30,
+    description: 'Decentralized real estate investment trust',
+    details: 'Open to accredited investors. Min $25K. On-chain distributions.',
+    is_open: true,
+  },
+  {
+    layer_key: 'founder',
+    name: 'Founder Equity',
+    sub_label: 'Sponsor Capital',
+    amount_m: 0.055,
+    pct_of_total: 0.18,
+    color: '#aa88ff',
+    seniority: 0.18,
+    yield_score: 1.00,
+    coverage: 0.20,
+    description: 'Founder skin in the game',
+    details: '$55K at risk. Delaware Series LLC. No personal guarantee.',
+    is_open: false,
+  },
+]
+
+const FINANCING_PROGRAMS = [
+  { category: 'Federal Loans', count: 3, icon: '🏦' },
+  { category: 'State Loans', count: 4, icon: '🏛️' },
+  { category: 'Federal Tax', count: 3, icon: '📋' },
+  { category: 'State Tax', count: 4, icon: '💰' },
+  { category: 'Federal Grants', count: 4, icon: '🎁' },
+  { category: 'State Programs', count: 1, icon: '⭐' },
+]
 
 export default function CapitalStackSection() {
   const [layers, setLayers] = useState<CapitalStackLayer[]>([])
@@ -29,25 +106,13 @@ export default function CapitalStackSection() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    loadCapitalStack()
-  }, [])
-
-  const loadCapitalStack = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('capital_stack')
-        .select('*')
-        .eq('is_active', true)
-        .order('display_order')
-
-      if (error) throw error
-      if (data) setLayers(data as CapitalStackLayer[])
-    } catch (error) {
-      console.error('Error loading capital stack:', error)
-    } finally {
+    // Simulate loading
+    const timer = setTimeout(() => {
+      setLayers(MOCK_CAPITAL_STACK)
       setIsLoading(false)
-    }
-  }
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [])
 
   const totalDeployed = layers.reduce((sum, layer) => sum + layer.amount_m, 0)
 
@@ -199,14 +264,7 @@ export default function CapitalStackSection() {
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
-            {[
-              { category: 'Federal Loans', count: 3, icon: '🏦' },
-              { category: 'State Loans', count: 4, icon: '🏛️' },
-              { category: 'Federal Tax', count: 3, icon: '📋' },
-              { category: 'State Tax', count: 4, icon: '💰' },
-              { category: 'Federal Grants', count: 4, icon: '🎁' },
-              { category: 'State Programs', count: 1, icon: '⭐' },
-            ].map((cat) => (
+            {FINANCING_PROGRAMS.map((cat) => (
               <div
                 key={cat.category}
                 className="p-4 border rounded-lg flex items-center gap-3"
