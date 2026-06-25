@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { TrendingUp, TrendingDown, Shield, Activity } from 'lucide-react'
 
 interface Agent {
@@ -361,7 +360,7 @@ export default function TrustGraphSection() {
     }
   }
 
-  const handleNodeClick = useCallback((nodeId: string | null, xFrac: number, yFrac: number) => {
+  const handleNodeClick = useCallback((nodeId: string | null, _xFrac: number, _yFrac: number) => {
     setSelectedAgent(nodeId)
   }, [])
 

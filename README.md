@@ -162,6 +162,7 @@ VC access code: `TRIBUTARY2026` (production)
 - [x] Phase 1: Unified database schema
 - [x] Phase 2: Auth extension with investor roles
 - [x] Phase 3: Component porting (CapitalStack, TrustGraph, Agents)
+- [x] Phase 3b: GitHub Pages deployment configured
 - [ ] Phase 4: Agent economy edge functions
 - [ ] Phase 5: Capital deployment dashboard
 - [ ] Phase 6: Constitutional governance engine
@@ -169,6 +170,34 @@ VC access code: `TRIBUTARY2026` (production)
 - [ ] Phase 8: Investor relations automation
 - [ ] Phase 9: Physical infrastructure monitor
 - [ ] Phase 10: Production deployment
+
+## 🌐 Deployment
+
+### GitHub Pages Setup
+
+1. **Build the project:**
+   ```bash
+   npm run build
+   ```
+
+2. **Deploy to gh-pages branch:**
+   ```bash
+   npm run deploy
+   ```
+
+3. **Configure GitHub Pages:**
+   - Go to **Settings → Pages**
+   - Set **Source** to `gh-pages` branch
+   - Site will be live at: `https://xmrtdao.github.io/capitalstack/`
+
+### Supabase Configuration
+
+1. Apply the migration:
+   ```bash
+   supabase db push
+   ```
+
+2. Update environment variables with your Supabase project credentials
 
 ## 🏢 Organizations
 
@@ -191,3 +220,5 @@ MIT License - see LICENSE file
 ---
 
 **Built with ❤️ by XMRT DAO**
+
+*Last updated: 2026-06-25 — Build passing ✅*

@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/integrations/supabase/client'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { TrendingUp, Shield, DollarSign, PieChart } from 'lucide-react'
+import { PieChart, DollarSign } from 'lucide-react'
 
 interface CapitalStackLayer {
   layer_key: string

@@ -106,7 +106,7 @@ export default function InvestorsPage() {
         const { data: distData } = await supabase
           .from('distribution_records')
           .select('*')
-          .eq('investor_id', investorProfile.id)
+          .eq('investor_tier', investorProfile.tier)
           .order('period_end', { ascending: false })
 
         if (distData) {
@@ -173,7 +173,7 @@ export default function InvestorsPage() {
         </div>
         {investorProfile && (
           <Badge variant={isVC ? 'default' : 'secondary'}>
-            {investorProfile.investor_tier.toUpperCase()}
+            {(investorProfile.investor_tier || investorProfile.tier || 'STANDARD').toUpperCase()}
           </Badge>
         )}
       </div>
