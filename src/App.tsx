@@ -3,6 +3,7 @@ import CapitalStackSection from './components/sections/CapitalStackSection'
 import TrustGraphSection from './components/sections/TrustGraphSection'
 import AgentsSection from './components/sections/AgentsSection'
 import Investors from './pages/Investors'
+import CapitalDeployment from './pages/CapitalDeployment'
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
                 <a href="#capital-stack" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Capital
                 </a>
+                <Link to="/deployment" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  Deployment
+                </Link>
                 <a href="#trustgraph" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   TrustGraph
                 </a>
@@ -43,6 +47,7 @@ function App() {
                 <AgentsSection />
               </>
             } />
+            <Route path="/deployment" element={<CapitalDeployment />} />
             <Route path="/investors" element={<Investors />} />
           </Routes>
         </main>
