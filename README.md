@@ -182,13 +182,14 @@ VC access code: `TRIBUTARY2026` (production)
 
 2. **Deploy to gh-pages branch:**
    ```bash
-   npm run deploy
+   npx gh-pages -d dist
    ```
 
 3. **Configure GitHub Pages:**
    - Go to **Settings → Pages**
    - Set **Source** to `gh-pages` branch
-   - Site will be live at: `https://xmrtdao.github.io/capitalstack/`
+
+**🌐 Live Site**: https://xmrtdao.github.io/capitalstack/
 
 ### Supabase Configuration
 
