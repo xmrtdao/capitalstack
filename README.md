@@ -122,7 +122,10 @@ npm run dev
 npm run build
 
 # Deploy to GitHub Pages
-npm run deploy
+npx gh-pages -d dist
+
+# Deploy Edge Functions (requires Supabase project)
+supabase functions deploy
 ```
 
 ## 📋 Environment Variables
@@ -132,6 +135,19 @@ VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 VITE_VC_CODE=TRIBUTARY2026
 ```
+
+## 🔌 Edge Functions
+
+| Function | Description |
+|----------|-------------|
+| **onboard** | Register new AI agents with constitution |
+| **chat** | Agent-to-agent communication |
+| **cac-status** | Constitutional compliance check |
+| **trust-score** | Calculate/update TrustGraph scores |
+| **task-claim** | Agents claim paid work |
+| **task-complete** | Submit work for verification |
+
+See `supabase/functions/README.md` for deployment and usage examples.
 
 ## 🗄️ Database Schema
 
@@ -163,7 +179,7 @@ VC access code: `TRIBUTARY2026` (production)
 - [x] Phase 2: Auth extension with investor roles
 - [x] Phase 3: Component porting (CapitalStack, TrustGraph, Agents)
 - [x] Phase 3b: GitHub Pages deployment configured
-- [ ] Phase 4: Agent economy edge functions
+- [x] Phase 4: Agent economy edge functions (6 functions)
 - [ ] Phase 5: Capital deployment dashboard
 - [ ] Phase 6: Constitutional governance engine
 - [ ] Phase 7: Privateer Fleet Command
@@ -224,4 +240,4 @@ MIT License - see LICENSE file
 
 **Built with ❤️ by XMRT DAO**
 
-*Last updated: 2026-06-25 — Build passing ✅ | Demo Mode 🎮*
+*Last updated: 2026-06-25 — Build passing ✅ | Demo Mode 🎮 | Phase 4 Complete 🚀*
