@@ -6,6 +6,7 @@ import Investors from './pages/Investors'
 import CapitalDeployment from './pages/CapitalDeployment'
 import Governance from './pages/Governance'
 import FleetCommand from './pages/FleetCommand'
+import VCBriefingRoom from './pages/VCBriefingRoom'
 
 function App() {
   return (
@@ -40,6 +41,9 @@ function App() {
                 <Link to="/investors" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   Investors
                 </Link>
+                <Link to="/vc" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  VC Briefing
+                </Link>
               </div>
             </div>
           </div>
@@ -59,6 +63,7 @@ function App() {
             <Route path="/governance" element={<Governance />} />
             <Route path="/fleet" element={<FleetCommand />} />
             <Route path="/investors" element={<Investors />} />
+            <Route path="/vc" element={<VCBriefingRoom />} />
           </Routes>
         </main>
 
